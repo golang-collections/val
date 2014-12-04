@@ -3,7 +3,7 @@ package val
 // This provides fast additional wrappers for a different collection BigVals
 
 import (
-	"github.com/davecgh/go-spew/spew"
+//	"github.com/davecgh/go-spew/spew"
 	u "unsafe"	// our good friends reflect and unsafe
 	r "reflect"
 )
@@ -12,19 +12,11 @@ import (
 // byte slice size a bit to accomodate the larger size of integers
 
 func (i *Ints) Wrap() (o BigVal) {
-	p := (*r.SliceHeader)(u.Pointer(i))
-	q := (*r.SliceHeader)(u.Pointer(&o))
-
-	*q = *p
-
-	return
+	return Get(i).Wrap()
 }
 
 func (i *Ints) Unwrap(o BigVal) {
-	p := (*r.SliceHeader)(u.Pointer(i))
-	q := (*r.SliceHeader)(u.Pointer(&o))
-
-	*p = *q
+	Get(i).Unwrap(o)
 }
 
 func (i Ptrs) Wrap() (o BigVal) {
@@ -44,6 +36,5 @@ func (i Ptrs) Unwrap(o BigVal) {
 }
 
 func Get(i interface{}) Ptrs {
-	spew.Dump(i)
-	return 0
+	return Ptrs(r.ValueOf(i).Pointer())
 }
